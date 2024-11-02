@@ -138,12 +138,15 @@ def price_cities(url):
 
     twentytwok = new[int(new.find('22K')):int(new.find('24K'))]
     value_22k = twentytwok[int(twentytwok.find('\n\n') + 1): int(twentytwok.find('\n\n+'))][3:]
+    value_22k = value_22k.split('\n')[0]
 
     twentyfourk = new[int(new.find('24K')):int(new.find('18K'))]
     value_24k = twentyfourk[int(twentyfourk.find('\n\n') + 1): int(twentyfourk.find('\n\n+'))][3:]
+    value_24k = value_24k.split('\n')[0]
 
     eighteenk = new[int(new.find('18K')):]
     value_18k = eighteenk[int(eighteenk.find('\n\n') + 1): int(eighteenk.find('\n\n+'))][3:]
+    value_18k = value_18k.split('\n')[0]
 
     return value_24k, value_22k, value_18k
 
@@ -184,9 +187,9 @@ if selected_city:
         value_24k, value_22k, value_18k = price_cities(city_url)
 
         # Convert string values to float for calculation
-        value_22k = float(value_22k.replace(',', ''))
-        value_24k = float(value_24k.replace(',', ''))
-        value_18k = float(value_18k.replace(',', ''))
+        value_22k = round(float(value_22k.replace(',', '')),2)
+        value_24k = round(float(value_24k.replace(',', '')),2)
+        value_18k = round(float(value_18k.replace(',', '')),2)
 
         # Prepare data for table
         data = {
@@ -202,14 +205,21 @@ if selected_city:
 
         # Display the DataFrame as a table
         st.write(f"Gold rates in {selected_city}:")
-        st.dataframe(df.style.set_properties(**{
+        # st.dataframe(df.style.set_properties(**{
+        #     'background-color': 'black',
+        #     'color': 'white',
+        #     'border-color': 'ash'
+        # }))
+        st.dataframe(df.style.format(precision=2).set_properties(**{
             'background-color': 'black',
             'color': 'white',
             'border-color': 'ash'
         }))
 
-    except:
-        st.error("Could not fetch the gold rates. Please try again.")
+    except Exception as e:
+        st.error(f"Could not fetch the gold rates. Please try again.{e}")
+    # except:
+    #     st.error("Could not fetch the gold rates. Please try again.")
     st.markdown("<br><hr><center><p style='color: grey;'>© 2024 All Rights Reserved</p></center><br>", unsafe_allow_html=True)
 
 
